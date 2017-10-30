@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CarDealershipModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Buyers">
+          <Key>
+            <PropertyRef Name="BuyerID" />
+          </Key>
+          <Property Name="BuyerID" Type="int" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LicenseNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PhoneNumer" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Car_Buyer">
+          <Key>
+            <PropertyRef Name="Car_BuyerID" />
+          </Key>
+          <Property Name="Car_BuyerID" Type="int" Nullable="false" />
+          <Property Name="CarID" Type="int" Nullable="false" />
+          <Property Name="BuyerID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Cars">
+          <Key>
+            <PropertyRef Name="CarID" />
+          </Key>
+          <Property Name="CarID" Type="int" Nullable="false" />
+          <Property Name="VinNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="CarMake" Type="nvarchar" MaxLength="50" />
+          <Property Name="CarModel" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModelYear" Type="int" />
+        </EntityType>
+        <Association Name="FK_Car_Buyer_Buyers">
+          <End Role="Buyers" Type="Self.Buyers" Multiplicity="1" />
+          <End Role="Car_Buyer" Type="Self.Car_Buyer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Buyers">
+              <PropertyRef Name="BuyerID" />
+            </Principal>
+            <Dependent Role="Car_Buyer">
+              <PropertyRef Name="BuyerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Car_Buyer_Cars">
+          <End Role="Cars" Type="Self.Cars" Multiplicity="1" />
+          <End Role="Car_Buyer" Type="Self.Car_Buyer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cars">
+              <PropertyRef Name="CarID" />
+            </Principal>
+            <Dependent Role="Car_Buyer">
+              <PropertyRef Name="CarID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CarDealershipModelStoreContainer">
+          <EntitySet Name="Buyers" EntityType="Self.Buyers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Car_Buyer" EntityType="Self.Car_Buyer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cars" EntityType="Self.Cars" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Car_Buyer_Buyers" Association="Self.FK_Car_Buyer_Buyers">
+            <End Role="Buyers" EntitySet="Buyers" />
+            <End Role="Car_Buyer" EntitySet="Car_Buyer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Car_Buyer_Cars" Association="Self.FK_Car_Buyer_Cars">
+            <End Role="Cars" EntitySet="Cars" />
+            <End Role="Car_Buyer" EntitySet="Car_Buyer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CarDealershipModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Buyer">
+          <Key>
+            <PropertyRef Name="BuyerID" />
+          </Key>
+          <Property Name="BuyerID" Type="Int32" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LicenseNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Car_Buyer" Relationship="Self.FK_Car_Buyer_Buyers" FromRole="Buyers" ToRole="Car_Buyer" />
+        </EntityType>
+        <EntityType Name="Car_Buyer">
+          <Key>
+            <PropertyRef Name="Car_BuyerID" />
+          </Key>
+          <Property Name="Car_BuyerID" Type="Int32" Nullable="false" />
+          <Property Name="CarID" Type="Int32" Nullable="false" />
+          <Property Name="BuyerID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Buyer" Relationship="Self.FK_Car_Buyer_Buyers" FromRole="Car_Buyer" ToRole="Buyers" />
+          <NavigationProperty Name="Car" Relationship="Self.FK_Car_Buyer_Cars" FromRole="Car_Buyer" ToRole="Cars" />
+        </EntityType>
+        <EntityType Name="Car">
+          <Key>
+            <PropertyRef Name="CarID" />
+          </Key>
+          <Property Name="CarID" Type="Int32" Nullable="false" />
+          <Property Name="VinNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CarMake" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CarModel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModelYear" Type="Int32" />
+          <NavigationProperty Name="Car_Buyer" Relationship="Self.FK_Car_Buyer_Cars" FromRole="Cars" ToRole="Car_Buyer" />
+        </EntityType>
+        <Association Name="FK_Car_Buyer_Buyers">
+          <End Role="Buyers" Type="Self.Buyer" Multiplicity="1" />
+          <End Role="Car_Buyer" Type="Self.Car_Buyer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Buyers">
+              <PropertyRef Name="BuyerID" />
+            </Principal>
+            <Dependent Role="Car_Buyer">
+              <PropertyRef Name="BuyerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Car_Buyer_Cars">
+          <End Role="Cars" Type="Self.Car" Multiplicity="1" />
+          <End Role="Car_Buyer" Type="Self.Car_Buyer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cars">
+              <PropertyRef Name="CarID" />
+            </Principal>
+            <Dependent Role="Car_Buyer">
+              <PropertyRef Name="CarID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CarDealershipEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Buyers" EntityType="Self.Buyer" />
+          <EntitySet Name="Car_Buyer" EntityType="Self.Car_Buyer" />
+          <EntitySet Name="Cars" EntityType="Self.Car" />
+          <AssociationSet Name="FK_Car_Buyer_Buyers" Association="Self.FK_Car_Buyer_Buyers">
+            <End Role="Buyers" EntitySet="Buyers" />
+            <End Role="Car_Buyer" EntitySet="Car_Buyer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Car_Buyer_Cars" Association="Self.FK_Car_Buyer_Cars">
+            <End Role="Cars" EntitySet="Cars" />
+            <End Role="Car_Buyer" EntitySet="Car_Buyer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CarDealershipModelStoreContainer" CdmEntityContainer="CarDealershipEntities">
+          <EntitySetMapping Name="Buyers">
+            <EntityTypeMapping TypeName="CarDealershipModel.Buyer">
+              <MappingFragment StoreEntitySet="Buyers">
+                <ScalarProperty Name="BuyerID" ColumnName="BuyerID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="LicenseNumber" ColumnName="LicenseNumber" />
+                <ScalarProperty Name="PhoneNumer" ColumnName="PhoneNumer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Car_Buyer">
+            <EntityTypeMapping TypeName="CarDealershipModel.Car_Buyer">
+              <MappingFragment StoreEntitySet="Car_Buyer">
+                <ScalarProperty Name="Car_BuyerID" ColumnName="Car_BuyerID" />
+                <ScalarProperty Name="CarID" ColumnName="CarID" />
+                <ScalarProperty Name="BuyerID" ColumnName="BuyerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cars">
+            <EntityTypeMapping TypeName="CarDealershipModel.Car">
+              <MappingFragment StoreEntitySet="Cars">
+                <ScalarProperty Name="CarID" ColumnName="CarID" />
+                <ScalarProperty Name="VinNumber" ColumnName="VinNumber" />
+                <ScalarProperty Name="CarMake" ColumnName="CarMake" />
+                <ScalarProperty Name="CarModel" ColumnName="CarModel" />
+                <ScalarProperty Name="ModelYear" ColumnName="ModelYear" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
